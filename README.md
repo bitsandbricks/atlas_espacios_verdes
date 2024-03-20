@@ -2,6 +2,8 @@
 
 Código, datos y reportes generados durante el relevamiento y cuantificación de accesibilidad de espacios verdes en ciudades argentinas. 
 
+Más información en https://www.fundacionbyb.org/atlas-espacios-verdes-argentina
+
 El código esta escrito en [R](https://www.r-project.org/).
 
 
