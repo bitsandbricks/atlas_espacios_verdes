@@ -3,7 +3,7 @@
 
 library(sf)
 library(igraph)
-library(tidyverse)
+library(dplyr)
 
 ## Carga de datos
 

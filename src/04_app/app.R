@@ -1,6 +1,7 @@
 library(shiny)
 library(leaflet)
-library(tidyverse)
+library(dplyr)
+library(readr)
 
 aglomerados <- read_csv('data/aglomerados.csv')
 

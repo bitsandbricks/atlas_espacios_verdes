@@ -6,8 +6,11 @@
 # El ruteo requiere de una instancia local de OSRM
 # véase:
 # https://rpubs.com/HAVB/osrm
+# MUY IMPORTANTE configurar osrm para rutas a pie ("foot"),
+# en la sección "Preprocesar los datos de ruteo" del tutorial
 
-library(tidyverse)
+library(dplyr)
+library(purrr)
 library(sf)
 library(osrm)
 
@@ -23,7 +26,7 @@ radios_ciudades <- st_read("data/raw/INDEC/radios_eph.json", stringsAsFactors = 
 
 
 # Buscamos establecer el área que puede cubrirse a pie desde el centroide de cada radio censal con una
-# caminada de 10 minutos, similar a la medotodología en 
+# caminata de 10 minutos, similar a la medotodología en 
 # A WALK TO THE PARK? ASSESSING ACCESS TO GREEN AREAS IN EUROPE'S CITIES
 # https://ec.europa.eu/regional_policy/sources/docgener/work/2016_03_green_urban_area.pdf
 
@@ -49,7 +52,7 @@ get_isocronas <- function(sf_object, minutos = 10, resolucion = 50, id_col = "id
     
         # si falló el cálculo de la isocrona, creamos una vacía
         if(is.null(resultado) || nrow(resultado) == 0 ) { 
-            resultado <- st_sf(id = NA, min = 0, max = minutos, center = minutos/2,
+            resultado <- st_sf(id = NA, isomin = 0, isomax = minutos,
                                geometry = st_sfc(st_polygon(), crs = 4326))
         }
         
@@ -72,43 +75,45 @@ procesar_isocronas_aglomerado <- function(codigo, dest = "data/processed/isocron
     radios_ciudades %>% 
         filter(codaglo == codigo) %>% 
         get_isocronas() %>% 
-        st_write(paste0(dest, "/", codigo, ".geojson"), delete_dsn = TRUE)
+        st_write(paste0(dest, "/", codigo, ".gpkg"), delete_dsn = TRUE)
 }
 
-procesar_isocronas_depto <- function(codigo, dest = "data/processed/isocronas") {
+procesar_isocronas_depto <- function(codigo, dest = "data/processed/isocronas/") {
     
     radios_ciudades %>% 
         filter(coddepto == codigo) %>% 
         get_isocronas() %>% 
-        st_write(paste0(dest, "/", codigo, ".geojson"), delete_dsn = TRUE)
+        st_write(paste0(dest, "/", codigo, ".gpkg"), delete_dsn = TRUE)
 }
 
 
 # En la práctica lo hicimos de a "cachos" porque los 26K radios urbanos toman como 14 horas en mi laptop... 
-# Mejor ir procesandolos de a uno, y si llega a falla algun departamento se preservan los logrados antes
+# Mejor ir procesándolos de a uno, y si llega a falla algún departamento se preservan los logrados antes
 # (HAVB)
 
-# radios_ciudades %>% 
-#     pull(coddepto) %>% 
-#     unique() %>% 
-#     #sort() %>%  # para testing
-#     #tail(2) %>%  # para testing
+# dir.create("data/processed/isocronas/tmp/")
+# 
+# radios_ciudades %>%
+#     filter(coddepto %in% c(112, 134)) %>%  # para testing
+#     pull(coddepto) %>%
+#     unique() %>%
 #     # Solo queremos el efecto secundario (guardar archivo .geojson con isocronas en disco)
-#     walk(procesar_isocronas_depto)
+#     walk(procesar_isocronas_depto, dest = "data/processed/isocronas/tmp/")
 # 
 # 
 # 
-# list.files("data/processed/isocronas", full.names = TRUE) %>% 
-#     map(st_read, stringsAsFactors = FALSE) %>% 
+# list.files("data/processed/isocronas/tmp", full.names = TRUE) %>%
+#     map(st_read, stringsAsFactors = FALSE) %>%
 #     reduce(rbind) %>%
-#     select(id) %>% 
-#     st_write("data/processed/isocronas/isocronas_10_min_a_pie_radios_urbanos.shp",
+#     select(id) %>%
+#     st_write("data/processed/isocronas/isocronas_10_min_a_pie_radios_urbanos.gpkg",
 #              delete_dsn = TRUE)
 
 
-# Dejamos la versión directa (tarda ~14 horas en una laptop 2017 con CPU i5 y 8GB RAM)
+# Dejamos la versión directa (tarda ~12 horas en una laptop 2019 con CPU i7)
 isocronas <- get_isocronas(radios_ciudades) %>% 
     select(id)
 
 # Guardamos los resultados
-st_write("data/processed/isocronas/isocronas_10_min_a_pie_radios_urbanos.shp")
+st_write("data/processed/isocronas/test_isocronas_10_min_a_pie_radios_urbanos.gpkg", 
+         delete_dsn = TRUE)

@@ -1,3 +1,6 @@
+# Permitimos que el proceso de descarga tome hasta 15 minutos antes de considerar que algo salió mal y desconectar
+options(timeout=900)
+
 # Descargamos el extracto de OSM para la Argentina con sus areas naturales desde geofrabrik.de
 
 url <- "https://download.geofabrik.de/south-america/argentina-latest-free.shp.zip"

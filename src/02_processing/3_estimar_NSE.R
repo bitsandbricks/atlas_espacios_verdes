@@ -3,7 +3,10 @@
 ########################################################################
 
 library(psych)
-library(tidyverse)
+library(dplyr)
+library(stringr)
+library(readr)
+library(sf)
 
 
 radios_ciudades <- st_read("data/raw/INDEC/radios_eph.json", stringsAsFactors = FALSE) %>% 

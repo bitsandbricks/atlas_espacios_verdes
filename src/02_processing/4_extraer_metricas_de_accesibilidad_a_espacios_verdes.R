@@ -2,8 +2,9 @@
 # Extraer métricas de accesibilidad a espacios verdes  #
 ########################################################
 
-library(tidyverse)
+library(dplyr)
 library(sf)
+library(stringr)
 
 
 radios_ciudades <- st_read("data/raw/INDEC/radios_eph.json", stringsAsFactors = FALSE) %>% 

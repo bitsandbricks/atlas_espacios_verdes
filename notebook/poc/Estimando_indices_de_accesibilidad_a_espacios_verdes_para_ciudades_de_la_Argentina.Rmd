@@ -63,11 +63,13 @@ https://wiki.openstreetmap.org/wiki/Key:leisure
 
 ```{r}
 
-bbox = getbb('Ciudad Autonoma de Buenos Aires')
+bbox <- getbb('Ciudad Autonoma de Buenos Aires')
 bbox
 
-bbox_poly = getbb('Ciudad Autonoma de Buenos Aires', format_out = "sf_polygon")
-bbox_poly
+bbox_poly <- getbb('Ciudad Autonoma de Buenos Aires', format_out = "sf_polygon")
+
+bbox_poly = bbox_poly$multipolygon[1,]
+
 plot(bbox_poly)
 ```
 
@@ -140,7 +142,7 @@ areas_protegidas <- opq(bbox) %>%
 areas_protegidas <- areas_protegidas %>% 
     osmdata_sf()
 
-areas_protegidas$osm_polygons %>% 
+areas_protegidas$osm_multipolygons %>% 
   ggplot() +
   geom_sf(aes(fill = boundary), color = NA) +
   geom_sf_text(aes(label = name), size = 2) +
@@ -196,9 +198,10 @@ Con eso podemos etiquetar a los espacios verdes originales con el id que los agr
 ```{r}
 areas_verdes <- areas_verdes %>% 
   st_join(areas_unificadas) %>% 
-  lwgeom::st_make_valid() %>% #sin esto, el summarise() falla con un error de topología inválida
+  st_make_valid() %>% #sin esto, el summarise() falla con un error de topología inválida
   group_by(id) %>% 
   summarise()
+
 ```
 
 
@@ -367,8 +370,9 @@ Descargados de la [Base geográfica Encuesta Permanente de Hogares](https://www.
 
 ```{r}
 
-ciudades <- st_read("../../Datasets/INDEC/EPH/radios_eph.json") %>% 
+ciudades <- st_read("../../data/raw/INDEC/radios_eph.json") %>% 
     st_transform(4326)
+
 
 ```
 

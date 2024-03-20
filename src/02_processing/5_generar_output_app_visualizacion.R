@@ -1,5 +1,6 @@
 library(sf)
-library(tidyverse)
+library(dplyr)
+library(readr)
 
 
 # Umbral de corte para áreas de espacios verdes
@@ -15,7 +16,8 @@ areas_verdes <- st_read("data/processed/osm/areas_verdes_urbanas_argentina.shp")
     group_by(cluster_id) %>% 
     summarise(area_m2 = sum(area_m2)) %>% 
     filter(area_m2 >= umbral_area_m2) %>% 
-    st_transform(crs = 4326)
+    st_transform(crs = 4326) |> 
+    st_make_valid()
 
 radios <- st_read("data/raw/INDEC/radios_eph.json", stringsAsFactors = FALSE) %>% 
     filter(tiporad == "U") %>% 

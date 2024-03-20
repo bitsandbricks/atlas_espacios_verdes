@@ -1,12 +1,6 @@
-# Datos del Registro Nacional de Barrios Populares (2017)
+# Datos del Registro Nacional de Barrios Populares (ubicación en marzo 2024)
 
-url <- "https://infra.datos.gob.ar/catalog/otros/dataset/3/distribution/3.2/download/barrios-populares.zip"
+url <- "https://datosabiertos.desarrollosocial.gob.ar/dataset/0d022767-9390-486a-bff4-ba53b85d730e/resource/0396a8a3-8998-4fc1-8503-e6706667b5fa/download/20210131_info_publica.gpkg"
 
-zipfile <- tempfile()
+download.file(url, "data/raw/RENABAP/renabap.gpkg")
 
-download.file(url, zipfile)
-
-unzip(zipfile, exdir = "data/raw/RENABAP/")
-
-# Nos libramos del archivo temporal
-unlink(zipfile)

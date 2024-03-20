@@ -1,5 +1,6 @@
 ## Verificando accesibilidad desde cada radio censal Urbano hasta el espacio verde más cercano
-library(tidyverse)
+library(dplyr)
+library(readr)
 library(sf)
 
 
@@ -24,7 +25,7 @@ espacios_verdes <- espacios_verdes %>%
     mutate(ha = as.numeric(st_area(.))/10000)
 
 # Cargamos isocronas calculadas con el script src/02_processing/1_estimar_isocronas_a_pie.R
-isocronas <- st_read("data/processed/isocronas/isocronas_10_min_a_pie_radios_urbanos.shp", 
+isocronas <- st_read("data/processed/isocronas/isocronas_10_min_a_pie_radios_urbanos.gpkg", 
                      stringsAsFactors = FALSE)
 
 # Unificamos proyecciones
@@ -43,4 +44,3 @@ accesibilidad <- st_join(isocronas, espacios_verdes) %>%
 
 accesibilidad  %>% 
     write_csv("data/processed/accesibilidad/espacios_verdes_mas_de_media_ha_a_10_m_caminando.csv")
-    

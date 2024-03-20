@@ -1,5 +1,7 @@
 library(readxl)
-library(tidyverse)
+library(stringr)
+library(dplyr)
+library(purrr)
 library(sf)
     
 # Los datos de mortalidad por departamento fueron obtenidos de 

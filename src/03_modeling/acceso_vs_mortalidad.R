@@ -1,4 +1,7 @@
-library(tidyverse)
+library(readr)
+library(dplyr)
+library(purrr)
+library(ggplot2)
 
 accesibilidad <- read_csv("data/processed/metricas/accesibilidad_espacios_verdes_localidades.csv") 
 
